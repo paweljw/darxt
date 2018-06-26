@@ -1,20 +1,27 @@
 <template>
-  <section class="text-center">
-    <img src="/darts.png" class="logo">
-    <div class="header">
-      <h1>Wybierz rodzaj rozgrywki</h1>
+  <div class="container">
+    <div class="row">
+      <div class="col text-center">
+        <img src="/darts.png" class="logo">
+        <h1>Wybierz rodzaj rozgrywki</h1>
+        <div class="form-group form-horizontal col-xs-12 col-md-6 offset-md-3">
+          <label for="players">Liczba graczy: </label>
+          <input name="players" id="players" class="form-control" type="number" :value="$store.state.players" min="2"
+            max="4" @change="setPlayers">
+        </div>
+        <router-link to="/301" class="btn btn-primary btn-xl">301</router-link>
+        <router-link to="/501" class="btn btn-primary btn-xl">501</router-link>
+        <router-link to="/701" class="btn btn-primary btn-xl">701</router-link>
+        <router-link to="/901" class="btn btn-primary btn-xl">901</router-link>
+        <hr/>
+        <h2>Ostatnie rozgrywki</h2>
+        <em v-if="!lastWinners">Chyba jeszcze nikt nie grał. Bądź pierwszy!</em>
+        <table class="table" v-if="lastWinners">
+          <LastWinner v-for="(winner, index) in lastWinners.slice(0, 10)" :winner="winner" :key="index"></LastWinner>
+        </table>
+      </div>
     </div>
-    <router-link to="/301" class="btn btn-primary btn-xl">301</router-link>
-    <router-link to="/501" class="btn btn-primary btn-xl">501</router-link>
-    <router-link to="/701" class="btn btn-primary btn-xl">701</router-link>
-    <router-link to="/901" class="btn btn-primary btn-xl">901</router-link>
-    <hr/>
-    <h2>Ostatnie rozgrywki</h2>
-    <em v-if="!lastWinners">Chyba jeszcze nikt nie grał. Bądź pierwszy!</em>
-    <table class="table" v-if="lastWinners">
-      <LastWinner v-for="(winner, index) in lastWinners.slice(0, 10)" :winner="winner" :key="index"></LastWinner>
-    </table>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -32,6 +39,12 @@ export default {
         return false
       }
     }
+  },
+  methods: {
+    setPlayers () {
+      let value = parseInt(document.getElementById('players').value);
+      this.$store.commit('changePlayers', value)
+    }
   }
 }
 </script>
@@ -43,15 +56,15 @@ section {
 
 .btn {
   padding: 10px 50px;
-  margin-right: 12px;
+  margin: 4px 10px;
 }
 
 .logo {
   height: 200px;
-  margin-bottom: 20px;
+  margin: 30px auto;
 }
 
-.header h1 {
+h1 {
   margin-bottom: 20px;
 }
 

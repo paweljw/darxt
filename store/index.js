@@ -15,5 +15,8 @@ export const mutations = {
   },
   reset (state) {
     state = { turn: 1, players: 2, winner: null }
+  },
+  changePlayers (state, players) {
+    state.players = players
   }
 }

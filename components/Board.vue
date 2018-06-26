@@ -1,8 +1,8 @@
 <template>
   <section class="text-center">
     <div class="row">
-      <Player :game="game" :turn=1 ref="player1"></Player>
-      <Player :game="game" :turn=2 ref="player2"></Player>
+      <Player v-for="turn in Array($store.state.players).fill(1).map((x, y) => x + y)" :key="turn" :game="game"
+        :turn="turn" :ref="'player' + turn"></Player>
     </div>
   </section>
 </template>
