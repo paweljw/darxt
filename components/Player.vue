@@ -1,63 +1,65 @@
 <template>
   <div :class='"col player " + (current ? "current" : "")'>
-    <input type="text" v-model="name" onclick="this.select()" onblur="this.selectionEnd = this.selectionStart" class="player-name"/>
+    <input type="text" v-model="name" onclick="this.select()" onblur="this.selectionEnd = this.selectionStart"
+      class="player-name"/>
     <div class="score">{{ score }}</div>
-    <input type="text" class="throw form-control" placeholder="Wprowadź rzut" :disabled="!current" v-on:keyup.13="submit" :id="'player'+turn+'-throw'">
-    <Score v-for="(score, index) in reversedHistory" :score="score" :key="index"></Score>
+    <input type="text" class="throw form-control" placeholder="Wprowadź rzut" :disabled="!current"
+      v-on:keyup.13="submit" :id="'player'+turn+'-throw'">
+    <Throw v-for="(score, index) in $store.state.throws.list[turn]" :score="score" :key="index"></Throw>
   </div>
 </template>
 
 <script>
-import Score from '@/components/Score'
+import Throw from '@/components/Throw'
 
 export default {
-  props: ['game', 'turn', 'currentTurn'],
+  props: ['game', 'turn'],
   components: {
-    Score
+    Throw
   },
   data () {
     return {
       name: 'Gracz ' + this.turn,
       score: parseInt(this.game),
-      history: []
     }
   },
   methods: {
     submit (e) {
       let value = parseInt(e.target.value)
-
+      this.recordScore(value)
+      this.checkWinCondition()
+    },
+    recordScore (value) {
       if (this.score >= value) {
         this.score -= value
-        this.history.push({ value: value, over: false })
+        this.$store.commit('throws/throw', { player: this.turn, score: { value: value, over: false } })
       } else {
-        this.history.push({ value: value, over: true })
+        this.$store.commit('throws/throw', { player: this.turn, score: { value: value, over: true } })
       }
-
-      e.target.value = ''
-      e.target.blur()
-
+    },
+    checkWinCondition () {
       if (this.score == 0) {
-        window.localStorage.lastWinners = window.localStorage.lastWinners || []
-        this.$root.$emit('won', this.name)
+        this.$store.commit('throws/reset')
+        this.$store.commit('win', this.name)
       } else {
-        this.$root.$emit('throw')
+        this.$store.commit('nextTurn')
       }
     }
   },
   computed: {
-    reversedHistory () {
-      return this.history.slice().reverse()
-    },
     current () {
-      return this.turn == this.currentTurn
+      return this.$store.state.turn == this.turn
     }
   },
   watch: {
-    currentTurn () {
-      if (this.currentTurn == this.turn) {
-        let element = document.getElementById('player' + this.turn + '-throw')
+    current () {
+      let element = document.getElementById('player' + this.turn + '-throw')
+      if (this.current) {
         element.disabled = false
         element.focus()
+      } else {
+        element.value = ''
+        element.blur()
       }
     }
   }

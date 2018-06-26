@@ -1,8 +1,8 @@
 <template>
   <section class="text-center">
     <div class="row">
-      <Player :game="game" :turn=1 :currentTurn="currentTurn" ref="player1"></Player>
-      <Player :game="game" :turn=2 :currentTurn="currentTurn" ref="player2"></Player>
+      <Player :game="game" :turn=1 ref="player1"></Player>
+      <Player :game="game" :turn=2 ref="player2"></Player>
     </div>
   </section>
 </template>
@@ -15,26 +15,20 @@ export default {
   components: {
     Player
   },
-  data () {
-    return {
-      currentTurn: 1
-    }
-  },
   created () {
-    this.$root.$on('throw', this.throwListener)
     this.$root.$on('won', this.winListener)
   },
   beforeDestroy () {
-    this.$root.$off('throw', this.throwListener)
     this.$root.$off('won', this.winListener)
   },
-  methods: {
-    throwListener () {
-      let turn = this.currentTurn + 1
-      if(turn > 2) { turn = 1 }
-      this.currentTurn = turn
-    },
-    winListener (name) {
+  computed: {
+    winner () {
+      return this.$store.state.winner
+    }
+  },
+  watch: {
+    winner () {
+      if (this.winner === null) return;
       let lastWinners = JSON.parse(window.localStorage.lastWinners || '[]')
       lastWinners.unshift({
         nameOne: this.$refs.player1.name,
@@ -43,7 +37,8 @@ export default {
         scoreTwo: this.$refs.player2.score
       })
       window.localStorage.lastWinners = JSON.stringify(lastWinners)
-      alert(name + ' wygrywa!')
+      alert(this.winner + ' wygrywa!')
+      this.$store.commit('reset')
       this.$router.push('/')
     }
   }
