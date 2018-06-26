@@ -1,7 +1,7 @@
 <template>
   <div :class='"col player " + (current ? "current" : "")'>
-    <input type="text" v-model="name" onclick="this.select()" onblur="this.selectionEnd = this.selectionStart"
-      class="player-name"/>
+    <input type="text" v-model="name" :autofocus="turn == 1" :tabindex="turn" onclick="this.select()"
+      onblur="this.selectionEnd = this.selectionStart" class="player-name"/>
     <div class="score">{{ score }}</div>
     <input type="text" class="throw form-control" :placeholder="$t('player.enterThrow')" :disabled="!current"
       v-on:keyup.13="submit" :id="'player'+turn+'-throw'">
@@ -24,14 +24,15 @@ export default {
     }
   },
   methods: {
-    submit (e) {
+    async submit (e) {
       let value = parseInt(e.target.value)
-      this.recordScore(value)
+      await this.recordScore(value)
       this.checkWinCondition()
     },
-    recordScore (value) {
+    async recordScore (value) {
       if (this.score >= value) {
         this.score -= value
+        await this.recordThrowAverage(value)
         this.$store.commit('throws/throw', { player: this.turn, score: { value: value, over: false } })
       } else {
         this.$store.commit('throws/throw', { player: this.turn, score: { value: value, over: true } })
@@ -44,6 +45,18 @@ export default {
       } else {
         this.$store.commit('nextTurn')
       }
+    },
+    async recordThrowAverage (value) {
+      if (this.name.match(/Player [0-9]+/)) return;
+
+      let throws = await this.$localForage.getItem('throws') || {}
+      if (throws[this.name]) {
+        throws[this.name] = (throws[this.name] + value) / 2
+      } else {
+        throws[this.name] = value
+      }
+
+      await this.$localForage.setItem('throws', throws)
     }
   },
   computed: {

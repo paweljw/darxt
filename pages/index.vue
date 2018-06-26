@@ -22,35 +22,37 @@
         <nuxt-link :to="localePath('701')" class="btn btn-primary btn-xl">701</nuxt-link>
         <nuxt-link :to="localePath('901')" class="btn btn-primary btn-xl">901</nuxt-link>
         <hr/>
-        <h2>{{ $t('index.latestGames' )}}</h2>
-        <em v-if="!previousGames">{{ $t('index.latestGamesEmpty') }}</em>
-        <div class="text-center" v-if="previousGames">
-          <PreviousGame v-for="game in previousGames.slice(0, 50)" :key="game.date" :game="game"></PreviousGame>
-        </div>
+        <b-tabs>
+          <b-tab :title="$t('index.latestGames')" active>
+            <LatestGames />
+          </b-tab>
+          <b-tab :title="$t('index.leaderboardWins')">
+            <LeaderboardWins />
+          </b-tab>
+          <b-tab :title="$t('index.leaderboardThrows')">
+            <LeaderboardThrows />
+          </b-tab>
+        </b-tabs>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import PreviousGame from '@/components/PreviousGame'
-import localForage from 'localforage'
+import LatestGames from '@/components/index/LatestGames'
+import LeaderboardWins from '@/components/index/LeaderboardWins'
+import LeaderboardThrows from '@/components/index/LeaderboardThrows'
 
 export default {
   components: {
-    PreviousGame
+    LatestGames,
+    LeaderboardWins,
+    LeaderboardThrows
   },
   methods: {
     setPlayers () {
       let value = parseInt(document.getElementById('players').value);
       this.$store.commit('changePlayers', value)
-    },
-    async lastWinners () {
-    }
-  },
-  asyncComputed: {
-    async previousGames () {
-      return await localForage.getItem('games')
     }
   }
 }
@@ -73,9 +75,5 @@ section {
 
 h1 {
   margin-bottom: 20px;
-}
-
-h2 {
-  margin: 25px 0px 30px 0px;
 }
 </style>
