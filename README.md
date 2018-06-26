@@ -1,6 +1,14 @@
 # darxt
 
-Super-simple darts scoring app built with Nuxt.js.
+Super-simple darts scoring app built with Nuxt.js. Check it out in action at https://darts.steamshard.net.
+
+## Tools used
+
+* [Nuxt.js](https://nuxtjs.org)
+* [Nuxt localForage module](https://github.com/nuxt-community/localforage-module)
+* TravisCI S3 deploy target provider
+
+Additionally, the demo app is hosted with AWS S3, ACM and CloudFront.
 
 ## Build Setup
 
@@ -18,5 +26,3 @@ $ yarn start
 # generate static project
 $ yarn run generate
 ```
-
-For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
