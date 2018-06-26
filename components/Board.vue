@@ -1,7 +1,7 @@
 <template>
   <section class="text-center">
     <div class="row">
-      <Player v-for="turn in Array($store.state.players).fill(1).map((x, y) => x + y)" :key="turn" :game="game"
+      <Player v-for="turn in turnRange" :key="turn" :game="game"
         :turn="turn" :ref="'player' + turn"></Player>
     </div>
   </section>
@@ -24,19 +24,37 @@ export default {
   computed: {
     winner () {
       return this.$store.state.winner
+    },
+    turnRange () {
+      return Array(this.$store.state.players).fill(1).map((x, y) => x + y)
     }
   },
   watch: {
-    winner () {
+    async winner () {
       if (this.winner === null) return;
-      let lastWinners = JSON.parse(window.localStorage.lastWinners || '[]')
-      lastWinners.unshift({
-        nameOne: this.$refs.player1.name,
-        nameTwo: this.$refs.player2.name,
-        scoreOne: this.$refs.player1.score,
-        scoreTwo: this.$refs.player2.score
+
+      let games = await this.$localForage.getItem('games')
+      games = games || []
+
+      let game = {
+        date: new Date(),
+        game: this.game,
+        players: []
+      }
+
+      this.turnRange.forEach((turn) => {
+        let player = this.$refs['player' + turn][0]
+        game.players[turn - 1] = {
+          name: player.name,
+          score: player.score
+        }
       })
-      window.localStorage.lastWinners = JSON.stringify(lastWinners)
+
+      console.log(game)
+
+      games.unshift(game)
+      await this.$localForage.setItem('games', games)
+
       alert(this.winner + ' wygrywa!')
       this.$store.commit('reset')
       this.$router.push('/')

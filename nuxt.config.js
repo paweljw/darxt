@@ -21,6 +21,7 @@ module.exports = {
   ],
 
   plugins: [
+    '~/plugins/vue-async-computed'
   ],
 
   /*
@@ -28,7 +29,9 @@ module.exports = {
   */
   modules: [
     // Doc: https://bootstrap-vue.js.org/docs/
-    'bootstrap-vue/nuxt'
+    'bootstrap-vue/nuxt',
+    // Doc: https://github.com/nuxt-community/localforage-module
+    '@nuxtjs/localforage'
   ],
 
   /*

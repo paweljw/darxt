@@ -15,35 +15,34 @@
         <router-link to="/901" class="btn btn-primary btn-xl">901</router-link>
         <hr/>
         <h2>Ostatnie rozgrywki</h2>
-        <em v-if="!lastWinners">Chyba jeszcze nikt nie grał. Bądź pierwszy!</em>
-        <table class="table" v-if="lastWinners">
-          <LastWinner v-for="(winner, index) in lastWinners.slice(0, 10)" :winner="winner" :key="index"></LastWinner>
-        </table>
+        <em v-if="!previousGames">Chyba jeszcze nikt nie grał. Bądź pierwszy! {{ previousGames }}</em>
+        <div class="text-center" v-if="previousGames">
+          <PreviousGame v-for="game in previousGames" :key="game.date" :game="game"></PreviousGame>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import LastWinner from '@/components/LastWinner'
+import PreviousGame from '@/components/PreviousGame'
+import localForage from 'localforage'
 
 export default {
   components: {
-    LastWinner
-  },
-  computed: {
-    lastWinners () {
-      if(window.localStorage.lastWinners) {
-        return JSON.parse(window.localStorage.lastWinners)
-      } else {
-        return false
-      }
-    }
+    PreviousGame
   },
   methods: {
     setPlayers () {
       let value = parseInt(document.getElementById('players').value);
       this.$store.commit('changePlayers', value)
+    },
+    async lastWinners () {
+    }
+  },
+  asyncComputed: {
+    async previousGames () {
+      return await localForage.getItem('games')
     }
   }
 }
