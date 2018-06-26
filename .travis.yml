@@ -1,0 +1,27 @@
+language: node_js
+node_js:
+  - "8"
+
+cache:
+  directories:
+    - "node_modules"
+
+branches:
+  only:
+  - master
+
+install:
+  - npm install
+  - npm run generate
+
+script:
+  - echo "Skipping tests"
+
+deploy:
+  provider: s3
+  access_key_id: $S3_ACCESS_KEY
+  secret_access_key: $S3_SECRET_KEY
+  bucket: $S3_BUCKET
+  skip_cleanup: true
+  region: eu-west-1
+  local_dir: dist
