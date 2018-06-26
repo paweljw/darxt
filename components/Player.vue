@@ -3,7 +3,7 @@
     <input type="text" v-model="name" onclick="this.select()" onblur="this.selectionEnd = this.selectionStart"
       class="player-name"/>
     <div class="score">{{ score }}</div>
-    <input type="text" class="throw form-control" placeholder="Wprowadź rzut" :disabled="!current"
+    <input type="text" class="throw form-control" :placeholder="$t('player.enterThrow')" :disabled="!current"
       v-on:keyup.13="submit" :id="'player'+turn+'-throw'">
     <Throw v-for="(score, index) in $store.state.throws.list[turn]" :score="score" :key="index"></Throw>
   </div>
@@ -19,7 +19,7 @@ export default {
   },
   data () {
     return {
-      name: 'Gracz ' + this.turn,
+      name: this.$t('player.playerTemplate', { num: this.turn }),
       score: parseInt(this.game),
     }
   },

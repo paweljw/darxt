@@ -21,6 +21,7 @@
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
     "nuxt": "^1.0.0",
+    "nuxt-i18n": "^4.0.1",
     "vue-async-computed": "^3.3.1"
   },
   "devDependencies": {

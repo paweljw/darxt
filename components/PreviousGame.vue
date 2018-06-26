@@ -2,11 +2,12 @@
   <div class="row">
     <div class="col-12">
       <h5>
-        Typ gry: <strong>{{ game.game }}</strong>
-        Rozegrana: <strong>{{ game.date.toLocaleDateString() }} {{ game.date.toLocaleTimeString() }}</strong>
+        {{ $t('previousGame.gameType' )}}: <strong>{{ game.game }}</strong>,
+        {{ $t('previousGame.played') }}
+        <strong>{{ game.date.toLocaleDateString() }} {{ game.date.toLocaleTimeString() }}</strong>
       </h5>
     </div>
-    <div :class="'col ' + (player.score == 0 ? 'alert-success' : '')" v-for="player in game.players" :key="player.name">
+    <div :class="'col ' + (player.score == 0 ? 'alert-success' : '')" v-for="(player, index) in game.players" :key="index">
       <strong>{{ player.name }}</strong>
       <br/>{{ player.score }}
     </div>

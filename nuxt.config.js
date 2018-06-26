@@ -31,7 +31,21 @@ module.exports = {
     // Doc: https://bootstrap-vue.js.org/docs/
     'bootstrap-vue/nuxt',
     // Doc: https://github.com/nuxt-community/localforage-module
-    '@nuxtjs/localforage'
+    '@nuxtjs/localforage',
+    // Doc: https://nuxt-community.github.io/nuxt-i18n/setup.html
+    ['nuxt-i18n', {
+      detectBrowserLanguage: {
+        useCookie: true,
+        cookieKey: 'i18n_redirected'
+      },
+      locales: [
+        { code: 'en', iso: 'en-US', file: 'en.js', name: '🇬🇧' },
+        { code: 'pl', iso: 'pl-PL', file: 'pl.js', name: '🇵🇱' }
+      ],
+      defaultLocale: 'en',
+      langDir: 'locales/',
+      lazy: true
+    }]
   ],
 
   /*

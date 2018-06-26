@@ -55,7 +55,7 @@ export default {
       games.unshift(game)
       await this.$localForage.setItem('games', games)
 
-      alert(this.winner + ' wygrywa!')
+      alert(this.$t('winnerAnnouncement', { winner: winner }))
       this.$store.commit('reset')
       this.$router.push('/')
     }
